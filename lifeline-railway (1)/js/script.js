@@ -257,10 +257,20 @@ function enableAlerts() {
 }
 
 async function logout() {
-    try { await api("auth.php?action=logout", { method: "POST" }); } catch (e) { /* ignore */ }
+    try { 
+        await api("auth.php?action=logout", { method: "POST" }); 
+    } catch (e) { 
+        console.error("Logout error:", e); 
+    }
+    
+    // Clear all local storage session items
     localStorage.removeItem(LS.section);
     localStorage.removeItem(LS.token);
-    window.location.replace("index.html");
+    localStorage.removeItem(LS.user);
+    state.user = null;
+
+    // Force hard reload to index.html to clear browser cookie cache
+    window.location.href = "index.html?logout=" + Date.now();
 }
 
 // --- TOAST NOTIFICATIONS ---
